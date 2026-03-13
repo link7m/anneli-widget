@@ -1,0 +1,476 @@
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+#asw { font-family:'DM Sans',sans-serif; display:flex; justify-content:center; padding:16px 16px 40px; box-sizing:border-box; }
+#asw *, #asw *::before, #asw *::after { box-sizing:border-box; margin:0; padding:0; }
+#asw .asw-card { background:#fff; border-radius:20px; box-shadow:0 32px 80px rgba(3,43,109,.13),0 2px 8px rgba(3,43,109,.06); width:100%; max-width:440px; overflow:hidden; }
+#asw .asw-hdr { background:linear-gradient(150deg,#021e4e 0%,#032b6d 50%,#063580 100%); padding:26px 32px 22px; position:relative; overflow:hidden; }
+#asw .asw-hdr::before { content:''; position:absolute; width:200px; height:200px; top:-60px; right:-50px; background:radial-gradient(circle,rgba(201,169,110,.18) 0%,transparent 65%); pointer-events:none; }
+#asw .asw-hdr::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(201,169,110,.5),transparent); pointer-events:none; }
+#asw .asw-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(201,169,110,.15); border:1px solid rgba(201,169,110,.3); border-radius:100px; padding:4px 11px 4px 8px; margin-bottom:12px; }
+#asw .asw-dot { width:7px; height:7px; background:#c9a96e; border-radius:50%; animation:aswPulse 2s ease-in-out infinite; flex-shrink:0; }
+@keyframes aswPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.75)} }
+#asw .asw-badge span { font-size:10.5px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:#e8d5b0; }
+#asw .asw-hdr h1 { font-family:'Playfair Display',serif; font-size:27px; font-weight:400; color:#fff; line-height:1.22; }
+#asw .asw-hdr h1 em { font-style:italic; color:#e8d5b0; }
+#asw .asw-hdr p { margin-top:7px; font-size:13px; color:rgba(255,255,255,.58); font-weight:300; line-height:1.55; }
+#asw .asw-prog { padding:18px 32px 4px; background:#fff; }
+#asw .asw-prog-track { height:3px; background:rgba(3,43,109,.08); border-radius:10px; overflow:hidden; }
+#asw .asw-prog-fill { height:100%; background:linear-gradient(90deg,#032b6d,#c9a96e); border-radius:10px; width:25%; transition:width .6s cubic-bezier(.4,0,.2,1); }
+#asw .asw-prog-lbls { display:flex; justify-content:space-between; margin-top:6px; }
+#asw .asw-pl { font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:#9ca3af; transition:color .3s; }
+#asw .asw-pl.active { color:#032b6d; font-weight:500; }
+#asw .asw-pl.done { color:#c9a96e; }
+#asw .asw-step { display:none; padding:24px 32px 32px; animation:aswIn .45s ease; }
+#asw .asw-step.active { display:block; }
+@keyframes aswIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+/* Step 1 */
+#asw .asw-zone { border:2px dashed rgba(3,43,109,.15); border-radius:14px; padding:32px 16px; text-align:center; cursor:pointer; transition:border-color .25s,background .25s; background:#faf8f4; position:relative; overflow:hidden; }
+#asw .asw-zone:hover,#asw .asw-zone.drag { border-color:#032b6d; background:rgba(3,43,109,.025); }
+#asw .asw-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+#asw .asw-uicon { width:52px; height:52px; background:linear-gradient(135deg,#032b6d,#0a3f99); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; box-shadow:0 6px 20px rgba(3,43,109,.22); }
+#asw .asw-uicon svg { width:22px; height:22px; color:#fff; }
+#asw .asw-thumb { display:none; width:76px; height:76px; border-radius:12px; object-fit:cover; margin:0 auto 12px; border:2.5px solid #c9a96e; box-shadow:0 4px 16px rgba(201,169,110,.28); }
+#asw .asw-zone.has-photo .asw-uicon { display:none; }
+#asw .asw-zone.has-photo .asw-thumb { display:block; }
+#asw .asw-zone h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:#111827; margin-bottom:5px; }
+#asw .asw-zone p { font-size:12.5px; color:#9ca3af; line-height:1.5; }
+#asw .asw-fmts { margin-top:10px; font-size:10.5px; color:#9ca3af; letter-spacing:.04em; }
+#asw .asw-priv { display:flex; align-items:flex-start; gap:8px; margin-top:14px; padding:10px 13px; background:rgba(3,43,109,.04); border-radius:10px; }
+#asw .asw-priv svg { width:13px; height:13px; color:#032b6d; flex-shrink:0; margin-top:2px; }
+#asw .asw-priv span { font-size:11.5px; color:#4b5563; line-height:1.45; }
+#asw .asw-soc { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; }
+#asw .asw-avs { display:flex; }
+#asw .asw-av { width:22px; height:22px; border-radius:50%; border:2px solid #fff; margin-left:-5px; overflow:hidden; }
+#asw .asw-av img { width:100%; height:100%; object-fit:cover; display:block; }
+#asw .asw-av:first-child { margin-left:0; }
+#asw .asw-soc p { font-size:11.5px; color:#9ca3af; }
+#asw .asw-stars { color:#c9a96e; letter-spacing:1px; font-size:10px; }
+/* Step 2 */
+#asw .asw-load { text-align:center; padding-top:8px; }
+#asw .asw-spin { width:96px; height:96px; position:relative; margin:0 auto 20px; }
+#asw .asw-ring { position:absolute; inset:0; border-radius:50%; border:2.5px solid transparent; animation:aswSpin 1.5s linear infinite; }
+#asw .asw-ra { border-top-color:#032b6d; border-right-color:rgba(3,43,109,.2); }
+#asw .asw-rb { inset:9px; border-top-color:#c9a96e; border-left-color:rgba(201,169,110,.25); animation-duration:1s; animation-direction:reverse; }
+#asw .asw-rc { inset:20px; border-top-color:rgba(3,43,109,.4); animation-duration:.7s; }
+@keyframes aswSpin { to{transform:rotate(360deg)} }
+#asw .asw-spin-ico { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+#asw .asw-spin-ico svg { width:20px; height:20px; color:#032b6d; }
+#asw .asw-load h2 { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:#111827; margin-bottom:5px; }
+#asw .asw-msg { font-size:13px; color:#4b5563; font-weight:300; min-height:18px; transition:opacity .35s ease; }
+#asw .asw-msg.fade { opacity:0; }
+#asw .asw-mets { margin-top:22px; display:flex; flex-direction:column; gap:9px; }
+#asw .asw-met { display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(4px); transition:opacity .5s,transform .5s; }
+#asw .asw-met.on { opacity:1; transform:translateY(0); }
+#asw .asw-mname { font-size:12px; color:#4b5563; width:148px; flex-shrink:0; }
+#asw .asw-mtrack { flex:1; height:3.5px; background:rgba(3,43,109,.08); border-radius:10px; overflow:hidden; }
+#asw .asw-mfill { height:100%; background:linear-gradient(90deg,#032b6d,#c9a96e); border-radius:10px; width:0; transition:width 1.4s cubic-bezier(.4,0,.2,1); }
+#asw .asw-mval { font-size:11px; color:#032b6d; font-weight:500; width:30px; text-align:right; }
+/* Step 3 */
+#asw .asw-gate { text-align:center; }
+#asw .asw-lock { width:58px; height:58px; background:linear-gradient(135deg,#c9a96e,#9a6f35); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; box-shadow:0 10px 28px rgba(201,169,110,.32); }
+#asw .asw-lock svg { width:26px; height:26px; color:#fff; }
+#asw .asw-gate h2 { font-family:'Playfair Display',serif; font-size:23px; font-weight:400; color:#111827; line-height:1.3; margin-bottom:7px; }
+#asw .asw-gate>p { font-size:13px; color:#4b5563; line-height:1.6; font-weight:300; margin-bottom:20px; }
+#asw .asw-tease { position:relative; border-radius:12px; overflow:hidden; height:110px; margin-bottom:20px; background:linear-gradient(135deg,#dde3f0,#ede8df); }
+#asw .asw-tphoto { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(14px) brightness(1.05) saturate(1.1); transform:scale(1.1); }
+#asw .asw-tovl { position:absolute; inset:0; background:rgba(255,255,255,.45); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; }
+#asw .asw-tovl svg { width:26px; height:26px; color:#032b6d; }
+#asw .asw-tovl span { font-size:11px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:#032b6d; }
+#asw .asw-ghl-form-wrap { width:100%; overflow:hidden; border-radius:11px; min-height:140px; }
+#asw .asw-ghl-form-wrap iframe { width:100%; min-height:140px; border:none; }
+#asw .asw-consent { font-size:11px; color:#9ca3af; text-align:center; line-height:1.55; margin-top:10px; }
+/* Step 4 */
+#asw .asw-res { text-align:center; }
+#asw .asw-chip { display:inline-flex; align-items:center; gap:5px; background:rgba(201,169,110,.1); border:1px solid rgba(201,169,110,.28); border-radius:100px; padding:4px 12px; margin-bottom:14px; }
+#asw .asw-chip svg { width:11px; height:11px; color:#c9a96e; }
+#asw .asw-chip span { font-size:10.5px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:#c9a96e; }
+#asw .asw-res h2 { font-family:'Playfair Display',serif; font-size:24px; font-weight:400; color:#111827; line-height:1.28; margin-bottom:7px; }
+#asw .asw-res>p { font-size:13px; color:#4b5563; line-height:1.6; font-weight:300; margin-bottom:20px; }
+#asw .asw-scores { background:linear-gradient(135deg,#021e4e,#032b6d); border-radius:14px; padding:18px 16px; margin-bottom:18px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; position:relative; overflow:hidden; }
+#asw .asw-scores::before { content:''; position:absolute; top:-40px; right:-40px; width:120px; height:120px; background:radial-gradient(circle,rgba(201,169,110,.15),transparent 70%); pointer-events:none; }
+#asw .asw-sc { text-align:center; }
+#asw .asw-snum { font-family:'Playfair Display',serif; font-size:27px; font-weight:400; color:#e8d5b0; line-height:1; margin-bottom:3px; }
+#asw .asw-snum sup { font-size:14px; vertical-align:super; }
+#asw .asw-snum sub { font-size:13px; }
+#asw .asw-slbl { font-size:9.5px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.07em; }
+#asw .asw-clbl { font-size:10.5px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:#9ca3af; text-align:left; margin-bottom:9px; }
+#asw .asw-cmp { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:18px; }
+#asw .asw-cc { border-radius:12px; overflow:hidden; position:relative; aspect-ratio:1; background:#faf8f4; }
+#asw .asw-cc img { width:100%; height:100%; object-fit:cover; display:block; }
+#asw .asw-cc.before img { filter:brightness(.97) saturate(.9) contrast(1.02); }
+#asw .asw-cc.after img { filter:brightness(1.12) saturate(1.15) contrast(1.05); }
+#asw .asw-cc.after.aidone img { filter:none; }
+#asw .asw-ctag { position:absolute; bottom:7px; left:7px; font-size:9.5px; font-weight:500; letter-spacing:.05em; text-transform:uppercase; padding:3px 7px; border-radius:5px; color:#fff; background:rgba(3,43,109,.82); }
+#asw .asw-cc.after .asw-ctag { background:rgba(201,169,110,.9); color:#111827; }
+#asw .asw-povl { display:none; position:absolute; inset:0; background:rgba(255,255,255,.85); align-items:center; justify-content:center; flex-direction:column; gap:6px; }
+#asw .asw-povl.on { display:flex; }
+#asw .asw-mspin { width:28px; height:28px; border:2.5px solid rgba(3,43,109,.12); border-top-color:#032b6d; border-radius:50%; animation:aswSpin .8s linear infinite; }
+#asw .asw-povl span { font-size:10px; color:#4b5563; letter-spacing:.04em; text-transform:uppercase; }
+#asw .asw-urg { display:flex; flex-direction:column; text-align:left; background:rgba(3,43,109,.04); border:1px solid rgba(3,43,109,.1); border-radius:11px; padding:13px 14px; margin-bottom:14px; }
+#asw .asw-urg-top { display:flex; align-items:center; gap:7px; }
+#asw .asw-live-dot { width:7px; height:7px; background:#e53e3e; border-radius:50%; animation:aswPulse 1.5s ease-in-out infinite; flex-shrink:0; }
+#asw .asw-live-tag { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#e53e3e; }
+#asw .asw-urg-nums { font-size:12.5px; color:#111827; font-weight:500; }
+#asw .asw-urg-nums strong { color:#032b6d; font-weight:700; }
+#asw .asw-urg p { font-size:12px; color:#4b5563; line-height:1.55; margin-top:4px; }
+/* Buttons */
+#asw .asw-btn { display:block; width:100%; border:none; border-radius:11px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; letter-spacing:.01em; transition:transform .2s,box-shadow .2s,opacity .2s; -webkit-appearance:none; appearance:none; text-align:center; }
+#asw .asw-btn:disabled { opacity:.45; cursor:not-allowed; }
+#asw .asw-btn:not(:disabled):hover { transform:translateY(-1px); }
+#asw .asw-btn:not(:disabled):active { transform:translateY(0); }
+#asw .asw-bn { background:linear-gradient(135deg,#032b6d,#0a3f99); color:#fff; padding:14px; box-shadow:0 6px 20px rgba(3,43,109,.25); margin-top:18px; }
+#asw .asw-bn:not(:disabled):hover { box-shadow:0 10px 28px rgba(3,43,109,.35); }
+#asw .asw-bg { background:linear-gradient(135deg,#c9a96e,#9a6f35); color:#fff; padding:15px; font-size:15px; box-shadow:0 6px 20px rgba(201,169,110,.32); }
+#asw .asw-bg:not(:disabled):hover { box-shadow:0 10px 28px rgba(201,169,110,.42); }
+#asw .asw-bgh { background:transparent; color:#4b5563; border:1.5px solid rgba(3,43,109,.1); padding:13px; margin-top:9px; font-size:13.5px; font-weight:400; }
+#asw .asw-bgh:hover { border-color:#032b6d; color:#032b6d; background:rgba(3,43,109,.03); }
+@media(max-width:480px){
+  #asw .asw-hdr { padding:22px 22px 20px; }
+  #asw .asw-step { padding:20px 22px 26px; }
+  #asw .asw-hdr h1 { font-size:24px; }
+  #asw .asw-prog { padding:14px 22px 4px; }
+}
+</style>
+<div id="asw">
+  <div class="asw-card">
+    <div class="asw-hdr">
+      <div class="asw-badge"><div class="asw-dot"></div><span>AI Naeratuse Analüüs</span></div>
+      <h1>Vaata, milline võiks<br>olla <em>sinu naeratus</em></h1>
+      <p>Lae üles selfie ja vaata, kuidas su naeratus muutuks Dr Anneli loomulike laminaatidega.</p>
+    </div>
+    <div class="asw-prog">
+      <div class="asw-prog-track"><div class="asw-prog-fill" id="aswFill"></div></div>
+      <div class="asw-prog-lbls">
+        <span class="asw-pl active" id="aswPl0">Foto</span>
+        <span class="asw-pl" id="aswPl1">Analüüs</span>
+        <span class="asw-pl" id="aswPl2">E-post</span>
+        <span class="asw-pl" id="aswPl3">Tulemus</span>
+      </div>
+    </div>
+    <!-- Step 1 -->
+    <div class="asw-step active" id="aswStep1">
+      <div class="asw-zone" id="aswZone">
+        <input type="file" accept="image/*" id="aswFile">
+        <img class="asw-thumb" id="aswThumb" alt="">
+        <div class="asw-uicon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg></div>
+        <h3 id="aswUTitle">Laadi üles selfie</h3>
+        <p id="aswUSub">Vali foto, kus su naeratus on selgelt nähtav, et saada täpseim analüüs.</p>
+        <p class="asw-fmts">JPG, PNG, HEIC · max 10 MB</p>
+      </div>
+      <div class="asw-priv">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+        <span>Sinu foto töödeldakse turvaliselt ega jagata kolmandate osapooltega.</span>
+      </div>
+      <button class="asw-btn asw-bn" id="aswStartBtn" disabled onclick="aswStart()">Analüüsi mu naeratust &rarr;</button>
+      <div class="asw-soc">
+        <div class="asw-avs">
+          <div class="asw-av"><img src="https://assets.cdn.filesafe.space/oj6ylS5OYve8owNoVnm5/media/69b28872bfc81f3b83ab413d.webp" alt=""></div>
+          <div class="asw-av"><img src="https://assets.cdn.filesafe.space/oj6ylS5OYve8owNoVnm5/media/69b288797fc07c0ff1b80915.webp" alt=""></div>
+          <div class="asw-av"><img src="https://assets.cdn.filesafe.space/oj6ylS5OYve8owNoVnm5/media/69b28886cab7f7f15f691131.webp" alt=""></div>
+        </div>
+        <p><span class="asw-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>&nbsp; 2 400+ naeratust analüüsitud</p>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="asw-step" id="aswStep2">
+      <div class="asw-load">
+        <div class="asw-spin">
+          <div class="asw-ring asw-ra"></div>
+          <div class="asw-ring asw-rb"></div>
+          <div class="asw-ring asw-rc"></div>
+          <div class="asw-spin-ico"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg></div>
+        </div>
+        <h2>Analüüsime sinu naeratust</h2>
+        <p class="asw-msg" id="aswMsg">Alustame analüüsi&hellip;</p>
+        <div class="asw-mets">
+          <div class="asw-met" id="aswM0"><span class="asw-mname">Hammaste kuju</span><div class="asw-mtrack"><div class="asw-mfill" id="aswMf0"></div></div><span class="asw-mval" id="aswMv0">&mdash;</span></div>
+          <div class="asw-met" id="aswM1"><span class="asw-mname">Naeratuse sümmeetria</span><div class="asw-mtrack"><div class="asw-mfill" id="aswMf1"></div></div><span class="asw-mval" id="aswMv1">&mdash;</span></div>
+          <div class="asw-met" id="aswM2"><span class="asw-mname">Värvitoon</span><div class="asw-mtrack"><div class="asw-mfill" id="aswMf2"></div></div><span class="asw-mval" id="aswMv2">&mdash;</span></div>
+          <div class="asw-met" id="aswM3"><span class="asw-mname">Laminaatide sobivus</span><div class="asw-mtrack"><div class="asw-mfill" id="aswMf3"></div></div><span class="asw-mval" id="aswMv3">&mdash;</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Step 3: Email gate — uses real GHL form for split test tracking -->
+    <div class="asw-step" id="aswStep3">
+      <div class="asw-gate">
+        <div class="asw-lock"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+        <h2>Sinu eelvaade on valmis</h2>
+        <p>Sisesta e-post, et näha oma naeratust Dr Anneli laminaatide stiiliga.</p>
+        <div class="asw-tease">
+          <img class="asw-tphoto" id="aswTeaser" src="" alt="">
+          <div class="asw-tovl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg><span>Ava oma tulemus</span></div>
+        </div>
+        <!-- GHL form — submits natively so split test tracks the opt-in -->
+        <div class="asw-ghl-form-wrap">
+          <iframe
+            src="https://api.leadconnectorhq.com/widget/form/x1dpfYlHpxGPWIGO1ZfV"
+            style="width:100%;height:100%;border:none;border-radius:3px"
+            id="inline-x1dpfYlHpxGPWIGO1ZfV"
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="AI naeratuse lead magnet form"
+            data-height="173"
+            data-layout-iframe-id="inline-x1dpfYlHpxGPWIGO1ZfV"
+            data-form-id="x1dpfYlHpxGPWIGO1ZfV"
+            title="AI naeratuse lead magnet form"
+          ></iframe>
+        </div>
+        <p class="asw-consent">Rämpsposti ei saadeta. Saad igal ajal tellimuse tühistada.</p>
+      </div>
+    </div>
+    <!-- Step 4 -->
+    <div class="asw-step" id="aswStep4">
+      <div class="asw-res">
+        <div class="asw-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd"/></svg><span>Analüüs valmis</span></div>
+        <h2>Sinu <em style="font-family:'Playfair Display',serif;font-style:italic;color:#c9a96e">naeratuse raport</em></h2>
+        <p>Meie AI tuvastas tugeva laminaatide sobivuse. Vaata, mida analüüs näitas:</p>
+        <div class="asw-scores">
+          <div class="asw-sc"><div class="asw-snum">+48<sup>%</sup></div><div class="asw-slbl">Esmamulje</div></div>
+          <div class="asw-sc"><div class="asw-snum">9<sub>/10</sub></div><div class="asw-slbl">Harmoonia</div></div>
+          <div class="asw-sc"><div class="asw-snum">94<sup>%</sup></div><div class="asw-slbl">Laminaatide sobivus</div></div>
+        </div>
+        <p class="asw-clbl">Sinu naeratuse võrdlus</p>
+        <div class="asw-cmp">
+          <div class="asw-cc before"><img id="aswBefore" src="" alt="Enne"><span class="asw-ctag">Enne</span></div>
+          <div class="asw-cc after" id="aswAfterCard">
+            <div class="asw-povl on" id="aswPovl"><div class="asw-mspin"></div><span>AI töötleb&hellip;</span></div>
+            <img id="aswAfter" src="" alt="Pärast">
+            <span class="asw-ctag">Pärast</span>
+          </div>
+        </div>
+        <div class="asw-urg">
+          <div class="asw-urg-top">
+            <div class="asw-live-dot"></div>
+            <span class="asw-live-tag">Live</span>
+            <span class="asw-urg-nums"><strong>18/20</strong> kohta broneeritud</span>
+          </div>
+          <p>Selle hooaja kohad täituvad kiiresti.</p>
+        </div>
+        <button class="asw-btn asw-bg" onclick="aswBook()">Vaata vabu aegu &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+  IMPORTANT: This widget script MUST load BEFORE form_embed.js
+  so we can intercept the GHL form's redirect postMessage.
+-->
+<script>
+(function(){
+  var BOOKING='https://anneli.laminaadid.ee/kalender-ai';
+  var AI_URL='https://anneli.andreas-b42.workers.dev/';
+  var imgOriginal=null,imgForAI=null,step=1;
+  var MSGS=['Analüüsime hammaste kuju\u2026','Kontrollime naeratuse sümmeetriat\u2026','Mõõdame hambavahesid\u2026','Hindame värvitoonide ühtlust\u2026','Loome loomuliku eelvaate\u2026','Koostame tulemused\u2026','Peaaegu valmis\u2026'];
+  var METS=[{m:'aswM0',f:'aswMf0',v:'aswMv0',t:82,d:500},{m:'aswM1',f:'aswMf1',v:'aswMv1',t:76,d:1050},{m:'aswM2',f:'aswMf2',v:'aswMv2',t:89,d:1700},{m:'aswM3',f:'aswMf3',v:'aswMv3',t:94,d:2450}];
+  var fileEl=document.getElementById('aswFile'),zone=document.getElementById('aswZone');
+
+  function compressForAI(base64, callback) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var max = 640;
+      var w = img.width, h = img.height;
+      if (w > h) { if (w > max) { h = Math.round(h * max / w); w = max; } }
+      else { if (h > max) { w = Math.round(w * max / h); h = max; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      var result = canvas.toDataURL('image/jpeg', 0.6);
+      console.log('Compressed image size:', Math.round(result.length/1024)+'KB', w+'x'+h);
+      callback(result);
+    };
+    img.onerror = function() { console.error('Compression failed, using original'); callback(base64); };
+    img.src = base64;
+  }
+
+  fileEl.addEventListener('change',function(e){
+    var f=e.target.files[0]; if(!f)return;
+    var r=new FileReader();
+    r.onload=function(ev){
+      imgOriginal=ev.target.result;
+      imgForAI=null;
+      var th=document.getElementById('aswThumb'); th.src=imgOriginal; th.style.display='block';
+      zone.classList.add('has-photo');
+      document.getElementById('aswUTitle').textContent='Foto valitud \u2713';
+      document.getElementById('aswUSub').textContent='Ettevalmistamine\u2026';
+      document.getElementById('aswStartBtn').disabled=true;
+      compressForAI(imgOriginal, function(compressed){
+        imgForAI=compressed;
+        document.getElementById('aswUSub').textContent='Vajuta \u201cAnalüüsi\u201d et alustada AI naeratuse hindamist.';
+        document.getElementById('aswStartBtn').disabled=false;
+      });
+    };
+    r.readAsDataURL(f);
+  });
+
+  zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
+  zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
+  zone.addEventListener('drop',function(e){
+    e.preventDefault();zone.classList.remove('drag');
+    var f=e.dataTransfer.files[0];
+    if(f&&f.type.startsWith('image/')){var dt=new DataTransfer();dt.items.add(f);fileEl.files=dt.files;fileEl.dispatchEvent(new Event('change'));}
+  });
+
+  function goTo(n){
+    document.getElementById('aswStep'+step).classList.remove('active');
+    document.getElementById('aswStep'+n).classList.add('active');
+    step=n;
+    document.getElementById('aswFill').style.width=['25%','50%','75%','100%'][n-1];
+    for(var i=0;i<4;i++){var el=document.getElementById('aswPl'+i);el.className='asw-pl';if(i+1<n)el.classList.add('done');if(i+1===n)el.classList.add('active');}
+  }
+
+  var aiPromise=null;
+
+  window.aswStart=function(){
+    goTo(2);
+    var imageToSend = imgForAI || imgOriginal;
+    console.log('AI request \u2014 using:', imgForAI ? 'compressed' : 'ORIGINAL (no compression!)', 'size:', Math.round(imageToSend.length/1024)+'KB');
+    if(AI_URL && imageToSend){
+      aiPromise=fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:imageToSend})})
+        .then(function(r){
+          console.log('Worker response status:', r.status);
+          if(!r.ok) return r.text().then(function(t){ console.error('Worker error body:', t); return null; });
+          return r.json();
+        })
+        .then(function(d){ console.log('AI result:', d ? (d.processedImageUrl ? 'GOT URL' : 'no url in response') : 'null'); return d; })
+        .catch(function(err){console.error('AI fetch error:',err.message);return null;});
+    }
+    var msgEl=document.getElementById('aswMsg'),idx=0;
+    var rot=setInterval(function(){
+      msgEl.classList.add('fade');
+      setTimeout(function(){idx=(idx+1)%MSGS.length;msgEl.textContent=MSGS[idx];msgEl.classList.remove('fade');},400);
+    },1400);
+    METS.forEach(function(m){
+      setTimeout(function(){
+        document.getElementById(m.m).classList.add('on');
+        setTimeout(function(){document.getElementById(m.f).style.width=m.t+'%';},80);
+        var c=0,ti=setInterval(function(){c+=2;if(c>=m.t){c=m.t;clearInterval(ti);}document.getElementById(m.v).textContent=c+'%';},22);
+      },m.d);
+    });
+    setTimeout(function(){clearInterval(rot);document.getElementById('aswTeaser').src=imgOriginal||'';goTo(3);},(3500+Math.random()*1500));
+  };
+
+  /*
+   * GHL form submission detection via postMessage.
+   *
+   * When the GHL form inside the iframe is submitted:
+   *   1. The iframe posts messages to the parent window (e.g. "set-sticky-contacts",
+   *      "modify-parent-url") which form_embed.js normally handles.
+   *   2. We intercept "modify-parent-url" to PREVENT the page redirect,
+   *      and instead advance to Step 4 (results).
+   *   3. We also listen for "set-sticky-contacts" as a backup trigger.
+   *
+   * This listener is registered BEFORE form_embed.js loads, so it fires first.
+   */
+  var ghlFormSubmitted = false;
+
+  function advanceToResults() {
+    if (ghlFormSubmitted) return; // prevent double-fire
+    ghlFormSubmitted = true;
+
+    document.getElementById('aswBefore').src = imgOriginal || '';
+    goTo(4);
+
+    if (AI_URL && aiPromise) {
+      aiPromise.then(function(d) {
+        if (d && d.processedImageUrl) {
+          var el = document.getElementById('aswAfter');
+          el.src = d.processedImageUrl;
+          el.onload = function() {
+            document.getElementById('aswPovl').classList.remove('on');
+            document.getElementById('aswAfterCard').classList.add('aidone');
+          };
+        } else { showFallback(); }
+      }).catch(showFallback);
+    } else if (AI_URL) {
+      var imageToSend = imgForAI || imgOriginal;
+      fetch(AI_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({image:imageToSend})})
+        .then(function(r) {
+          if (!r.ok) throw new Error('Worker returned ' + r.status);
+          return r.json();
+        }).then(function(d) {
+          if (d && d.processedImageUrl) {
+            var el = document.getElementById('aswAfter');
+            el.src = d.processedImageUrl;
+            el.onload = function() {
+              document.getElementById('aswPovl').classList.remove('on');
+              document.getElementById('aswAfterCard').classList.add('aidone');
+            };
+          } else { showFallback(); }
+        }).catch(showFallback);
+    } else { showFallback(); }
+  }
+
+  function showFallback() {
+    var el = document.getElementById('aswAfter');
+    el.src = imgOriginal || '';
+    el.onload = function() { document.getElementById('aswPovl').classList.remove('on'); };
+  }
+
+  window.addEventListener('message', function(event) {
+    // Only process when we're on the email step
+    if (step !== 3) return;
+
+    try {
+      var data = event.data;
+      // GHL form_embed.js uses string messages that are JSON arrays
+      if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch(e) { return; }
+      }
+      if (!Array.isArray(data)) return;
+
+      var action = data[0];
+
+      if (action === 'modify-parent-url') {
+        // BLOCK the redirect — form_embed.js would navigate the page away.
+        // We stop propagation so form_embed.js never sees this message.
+        event.stopImmediatePropagation();
+        console.log('[ASW] GHL form submitted — blocked redirect, advancing to results');
+        advanceToResults();
+        return;
+      }
+
+      if (action === 'set-sticky-contacts') {
+        // Backup detection: lead was collected
+        console.log('[ASW] GHL form: sticky contact set — advancing to results');
+        advanceToResults();
+        return;
+      }
+    } catch(e) {
+      console.error('[ASW] postMessage parse error:', e);
+    }
+  }, true); // <-- useCapture=true ensures this fires before form_embed.js's listener
+
+  window.aswBook = function() { window.open(BOOKING, '_blank'); };
+
+  window.aswRestart = function() {
+    imgOriginal = null; imgForAI = null; aiPromise = null; ghlFormSubmitted = false;
+    fileEl.value = '';
+    var th = document.getElementById('aswThumb'); th.src = ''; th.style.display = 'none';
+    zone.classList.remove('has-photo');
+    document.getElementById('aswUTitle').textContent = 'Laadi üles selfie';
+    document.getElementById('aswUSub').textContent = 'Vali foto, kus su naeratus on selgelt nähtav, et saada täpseim analüüs.';
+    document.getElementById('aswStartBtn').disabled = true;
+    METS.forEach(function(m) {
+      document.getElementById(m.m).classList.remove('on');
+      document.getElementById(m.f).style.width = '0';
+      document.getElementById(m.v).textContent = '\u2014';
+    });
+    document.getElementById('aswAfterCard').classList.remove('aidone');
+    document.getElementById('aswPovl').classList.add('on');
+    document.getElementById('aswAfter').src = '';
+    document.getElementById('aswBefore').src = '';
+    // Reload the GHL form iframe to reset it
+    var ghlIframe = document.getElementById('inline-x1dpfYlHpxGPWIGO1ZfV');
+    if (ghlIframe) ghlIframe.src = ghlIframe.src;
+    goTo(1);
+  };
+})();
+</script>
+<!-- GHL form embed script — MUST load AFTER the widget script above -->
+<script src="https://link.msgsndr.com/js/form_embed.js"></script>
