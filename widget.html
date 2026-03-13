@@ -374,33 +374,24 @@
   window.aswSubmit=function(){
     var email=document.getElementById('aswEmail').value.trim();
 
-    // Fill and submit the hidden native GHL form (for split test tracking)
+    // Fill and submit the hidden native GHL form
     var ghlInput = findGhlEmailInput();
     if (ghlInput) {
-      // Set value — try both native setter (React) and direct (Vue)
-      try {
-        var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-        nativeSetter.call(ghlInput, email);
-      } catch(e) { ghlInput.value = email; }
-      ghlInput.value = email;
-      // Fire every event Vue/React might listen to
+      // Simulate real typing via execCommand — triggers Vue/React bindings reliably
+      ghlInput.focus();
+      ghlInput.value = '';
       ghlInput.dispatchEvent(new Event('input', {bubbles: true}));
-      ghlInput.dispatchEvent(new Event('change', {bubbles: true}));
-      ghlInput.dispatchEvent(new KeyboardEvent('keyup', {bubbles: true}));
-      ghlInput.dispatchEvent(new Event('blur', {bubbles: true}));
-      // Click submit after Vue processes the value
-      var formWrap = ghlInput.closest('#_builder-form') || ghlInput.closest('.ghl-form-wrap') || ghlInput.closest('[id^="form-"]');
-      var btn = formWrap ? formWrap.querySelector('button[type="submit"]') : document.querySelector('#_builder-form button[type="submit"]');
-      if (btn) {
-        setTimeout(function(){ btn.click(); console.log('[ASW] GHL submit clicked'); }, 300);
-      } else {
-        console.warn('[ASW] No submit button found');
-      }
+      document.execCommand('insertText', false, email);
+      // Click submit after framework processes
+      setTimeout(function(){
+        var formWrap = ghlInput.closest('#_builder-form') || ghlInput.closest('.ghl-form-wrap') || ghlInput.closest('[id^="form-"]');
+        var btn = formWrap ? formWrap.querySelector('button[type="submit"]') : document.querySelector('#_builder-form button[type="submit"]');
+        if (btn) { btn.click(); console.log('[ASW] GHL submit clicked, email:', email); }
+        else { console.warn('[ASW] No submit button found'); }
+      }, 400);
     } else {
-      console.warn('[ASW] No GHL form found');
+      console.warn('[ASW] No GHL form found — check that the hidden form is on the page');
     }
-    // Webhook backup — always creates contact even if GHL form fails
-    fetch('https://services.leadconnectorhq.com/hooks/oj6ylS5OYve8owNoVnm5/webhook-trigger/e8578777-489a-4423-92f2-bf7134ac0597',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'ai-naeratus-widget',timestamp:new Date().toISOString(),tags:['laminaadid-huvitatud','ai-widget']})}).catch(function(){});
 
     // Continue with widget flow
     document.getElementById('aswBefore').src=imgOriginal||'';
