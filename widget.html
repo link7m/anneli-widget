@@ -76,8 +76,11 @@
 #asw .asw-tovl { position:absolute; inset:0; background:rgba(255,255,255,.45); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; }
 #asw .asw-tovl svg { width:26px; height:26px; color:#032b6d; }
 #asw .asw-tovl span { font-size:11px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:#032b6d; }
-#asw .asw-ghl-form-wrap { width:100%; overflow:hidden; border-radius:11px; min-height:140px; }
-#asw .asw-ghl-form-wrap iframe { width:100%; min-height:140px; border:none; }
+#asw .asw-field { position:relative; margin-bottom:11px; text-align:left; }
+#asw .asw-field svg { position:absolute; left:13px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:#9ca3af; pointer-events:none; }
+#asw .asw-field input { width:100%; padding:13px 13px 13px 38px; border:1.5px solid rgba(3,43,109,.1); border-radius:11px; font-family:'DM Sans',sans-serif; font-size:14px; color:#111827; background:#faf8f4; outline:none; transition:border-color .2s,box-shadow .2s,background .2s; -webkit-appearance:none; appearance:none; }
+#asw .asw-field input:focus { border-color:#032b6d; box-shadow:0 0 0 3px rgba(3,43,109,.07); background:#fff; }
+#asw .asw-field input::placeholder { color:#9ca3af; }
 #asw .asw-consent { font-size:11px; color:#9ca3af; text-align:center; line-height:1.55; margin-top:10px; }
 /* Step 4 */
 #asw .asw-res { text-align:center; }
@@ -190,7 +193,7 @@
         </div>
       </div>
     </div>
-    <!-- Step 3: Email gate — uses real GHL form for split test tracking -->
+    <!-- Step 3 -->
     <div class="asw-step" id="aswStep3">
       <div class="asw-gate">
         <div class="asw-lock"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
@@ -200,26 +203,11 @@
           <img class="asw-tphoto" id="aswTeaser" src="" alt="">
           <div class="asw-tovl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg><span>Ava oma tulemus</span></div>
         </div>
-        <!-- GHL form — submits natively so split test tracks the opt-in -->
-        <div class="asw-ghl-form-wrap">
-          <iframe
-            src="https://api.leadconnectorhq.com/widget/form/x1dpfYlHpxGPWIGO1ZfV"
-            style="width:100%;height:100%;border:none;border-radius:3px"
-            id="inline-x1dpfYlHpxGPWIGO1ZfV"
-            data-layout="{'id':'INLINE'}"
-            data-trigger-type="alwaysShow"
-            data-trigger-value=""
-            data-activation-type="alwaysActivated"
-            data-activation-value=""
-            data-deactivation-type="neverDeactivate"
-            data-deactivation-value=""
-            data-form-name="AI naeratuse lead magnet form"
-            data-height="173"
-            data-layout-iframe-id="inline-x1dpfYlHpxGPWIGO1ZfV"
-            data-form-id="x1dpfYlHpxGPWIGO1ZfV"
-            title="AI naeratuse lead magnet form"
-          ></iframe>
+        <div class="asw-field">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          <input type="email" id="aswEmail" placeholder="sinu@email.ee" oninput="aswCheckEmail()">
         </div>
+        <button class="asw-btn asw-bn" id="aswRevBtn" disabled onclick="aswSubmit()" style="margin-top:4px">Näita minu naeratuse eelvaadet &rarr;</button>
         <p class="asw-consent">Rämpsposti ei saadeta. Saad igal ajal tellimuse tühistada.</p>
       </div>
     </div>
@@ -257,19 +245,36 @@
   </div>
 </div>
 
-<!--
-  IMPORTANT: This widget script MUST load BEFORE form_embed.js
-  so we can intercept the GHL form's redirect postMessage.
--->
+<!-- Hidden GHL form for split test tracking (user never sees this) -->
+<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+  <iframe
+    src="https://api.leadconnectorhq.com/widget/form/x1dpfYlHpxGPWIGO1ZfV"
+    style="width:100%;height:100%;border:none;"
+    id="inline-x1dpfYlHpxGPWIGO1ZfV"
+    data-layout="{'id':'INLINE'}"
+    data-trigger-type="alwaysShow"
+    data-trigger-value=""
+    data-activation-type="alwaysActivated"
+    data-activation-value=""
+    data-deactivation-type="neverDeactivate"
+    data-deactivation-value=""
+    data-form-name="AI naeratuse lead magnet form"
+    data-height="173"
+    data-layout-iframe-id="inline-x1dpfYlHpxGPWIGO1ZfV"
+    data-form-id="x1dpfYlHpxGPWIGO1ZfV"
+    title="AI naeratuse lead magnet form"
+  ></iframe>
+</div>
+
 <script>
 (function(){
+  var WEBHOOK='https://services.leadconnectorhq.com/hooks/oj6ylS5OYve8owNoVnm5/webhook-trigger/e8578777-489a-4423-92f2-bf7134ac0597';
   var BOOKING='https://anneli.laminaadid.ee/kalender-ai';
   var AI_URL='https://anneli.andreas-b42.workers.dev/';
   var imgOriginal=null,imgForAI=null,step=1;
   var MSGS=['Analüüsime hammaste kuju\u2026','Kontrollime naeratuse sümmeetriat\u2026','Mõõdame hambavahesid\u2026','Hindame värvitoonide ühtlust\u2026','Loome loomuliku eelvaate\u2026','Koostame tulemused\u2026','Peaaegu valmis\u2026'];
   var METS=[{m:'aswM0',f:'aswMf0',v:'aswMv0',t:82,d:500},{m:'aswM1',f:'aswMf1',v:'aswMv1',t:76,d:1050},{m:'aswM2',f:'aswMf2',v:'aswMv2',t:89,d:1700},{m:'aswM3',f:'aswMf3',v:'aswMv3',t:94,d:2450}];
   var fileEl=document.getElementById('aswFile'),zone=document.getElementById('aswZone');
-
   function compressForAI(base64, callback) {
     var img = new Image();
     img.onload = function() {
@@ -287,7 +292,6 @@
     img.onerror = function() { console.error('Compression failed, using original'); callback(base64); };
     img.src = base64;
   }
-
   fileEl.addEventListener('change',function(e){
     var f=e.target.files[0]; if(!f)return;
     var r=new FileReader();
@@ -307,7 +311,6 @@
     };
     r.readAsDataURL(f);
   });
-
   zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
   zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
   zone.addEventListener('drop',function(e){
@@ -315,7 +318,6 @@
     var f=e.dataTransfer.files[0];
     if(f&&f.type.startsWith('image/')){var dt=new DataTransfer();dt.items.add(f);fileEl.files=dt.files;fileEl.dispatchEvent(new Event('change'));}
   });
-
   function goTo(n){
     document.getElementById('aswStep'+step).classList.remove('active');
     document.getElementById('aswStep'+n).classList.add('active');
@@ -323,11 +325,10 @@
     document.getElementById('aswFill').style.width=['25%','50%','75%','100%'][n-1];
     for(var i=0;i<4;i++){var el=document.getElementById('aswPl'+i);el.className='asw-pl';if(i+1<n)el.classList.add('done');if(i+1===n)el.classList.add('active');}
   }
-
   var aiPromise=null;
-
   window.aswStart=function(){
     goTo(2);
+    // Fire AI request with compressed image
     var imageToSend = imgForAI || imgOriginal;
     console.log('AI request \u2014 using:', imgForAI ? 'compressed' : 'ORIGINAL (no compression!)', 'size:', Math.round(imageToSend.length/1024)+'KB');
     if(AI_URL && imageToSend){
@@ -354,123 +355,66 @@
     });
     setTimeout(function(){clearInterval(rot);document.getElementById('aswTeaser').src=imgOriginal||'';goTo(3);},(3500+Math.random()*1500));
   };
-
-  /*
-   * GHL form submission detection via postMessage.
-   *
-   * When the GHL form inside the iframe is submitted:
-   *   1. The iframe posts messages to the parent window (e.g. "set-sticky-contacts",
-   *      "modify-parent-url") which form_embed.js normally handles.
-   *   2. We intercept "modify-parent-url" to PREVENT the page redirect,
-   *      and instead advance to Step 4 (results).
-   *   3. We also listen for "set-sticky-contacts" as a backup trigger.
-   *
-   * This listener is registered BEFORE form_embed.js loads, so it fires first.
-   */
-  var ghlFormSubmitted = false;
-
-  function advanceToResults() {
-    if (ghlFormSubmitted) return; // prevent double-fire
-    ghlFormSubmitted = true;
-
-    document.getElementById('aswBefore').src = imgOriginal || '';
+  window.aswCheckEmail=function(){
+    var v=document.getElementById('aswEmail').value;
+    document.getElementById('aswRevBtn').disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  };
+  window.aswSubmit=function(){
+    var email=document.getElementById('aswEmail').value.trim();
+    // 1) Send contact to GHL via webhook (creates the contact)
+    fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'ai-naeratus-widget',timestamp:new Date().toISOString(),tags:['laminaadid-huvitatud','ai-widget']})}).catch(function(){});
+    // 2) Try to trigger GHL split test tracking via the hidden form's postMessage system.
+    //    form_embed.js on the page listens for these messages. We simulate what the
+    //    GHL form iframe would send after a successful submission.
+    try {
+      // Simulate "set-sticky-contacts" — tells form_embed.js a lead was collected
+      window.postMessage(JSON.stringify(['set-sticky-contacts',JSON.stringify({email:email})]),'*');
+      // Also set the localStorage flag that form_embed.js normally sets
+      try { localStorage.setItem('leadCollected','true'); } catch(e){}
+    } catch(e){ console.error('[ASW] tracking error:', e); }
+    // 3) Continue with widget flow
+    document.getElementById('aswBefore').src=imgOriginal||'';
     goTo(4);
-
-    if (AI_URL && aiPromise) {
-      aiPromise.then(function(d) {
-        if (d && d.processedImageUrl) {
-          var el = document.getElementById('aswAfter');
-          el.src = d.processedImageUrl;
-          el.onload = function() {
-            document.getElementById('aswPovl').classList.remove('on');
-            document.getElementById('aswAfterCard').classList.add('aidone');
-          };
+    if(AI_URL && aiPromise){
+      aiPromise.then(function(d){
+        if(d && d.processedImageUrl){
+          var el=document.getElementById('aswAfter');
+          el.src=d.processedImageUrl;
+          el.onload=function(){document.getElementById('aswPovl').classList.remove('on');document.getElementById('aswAfterCard').classList.add('aidone');};
         } else { showFallback(); }
       }).catch(showFallback);
-    } else if (AI_URL) {
+    } else if(AI_URL){
       var imageToSend = imgForAI || imgOriginal;
-      fetch(AI_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({image:imageToSend})})
-        .then(function(r) {
-          if (!r.ok) throw new Error('Worker returned ' + r.status);
+      fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:imageToSend})})
+        .then(function(r){
+          if(!r.ok) throw new Error('Worker returned '+r.status);
           return r.json();
-        }).then(function(d) {
-          if (d && d.processedImageUrl) {
-            var el = document.getElementById('aswAfter');
-            el.src = d.processedImageUrl;
-            el.onload = function() {
-              document.getElementById('aswPovl').classList.remove('on');
-              document.getElementById('aswAfterCard').classList.add('aidone');
-            };
-          } else { showFallback(); }
+        }).then(function(d){
+          if(d && d.processedImageUrl){var el=document.getElementById('aswAfter');el.src=d.processedImageUrl;el.onload=function(){document.getElementById('aswPovl').classList.remove('on');document.getElementById('aswAfterCard').classList.add('aidone');};}
+          else{showFallback();}
         }).catch(showFallback);
     } else { showFallback(); }
+  };
+  function showFallback(){
+    var el=document.getElementById('aswAfter');el.src=imgOriginal||'';
+    el.onload=function(){document.getElementById('aswPovl').classList.remove('on');};
   }
-
-  function showFallback() {
-    var el = document.getElementById('aswAfter');
-    el.src = imgOriginal || '';
-    el.onload = function() { document.getElementById('aswPovl').classList.remove('on'); };
-  }
-
-  window.addEventListener('message', function(event) {
-    // Only process when we're on the email step
-    if (step !== 3) return;
-
-    try {
-      var data = event.data;
-      // GHL form_embed.js uses string messages that are JSON arrays
-      if (typeof data === 'string') {
-        try { data = JSON.parse(data); } catch(e) { return; }
-      }
-      if (!Array.isArray(data)) return;
-
-      var action = data[0];
-
-      if (action === 'modify-parent-url') {
-        // BLOCK the redirect — form_embed.js would navigate the page away.
-        // We stop propagation so form_embed.js never sees this message.
-        event.stopImmediatePropagation();
-        console.log('[ASW] GHL form submitted — blocked redirect, advancing to results');
-        advanceToResults();
-        return;
-      }
-
-      if (action === 'set-sticky-contacts') {
-        // Backup detection: lead was collected
-        console.log('[ASW] GHL form: sticky contact set — advancing to results');
-        advanceToResults();
-        return;
-      }
-    } catch(e) {
-      console.error('[ASW] postMessage parse error:', e);
-    }
-  }, true); // <-- useCapture=true ensures this fires before form_embed.js's listener
-
-  window.aswBook = function() { window.open(BOOKING, '_blank'); };
-
-  window.aswRestart = function() {
-    imgOriginal = null; imgForAI = null; aiPromise = null; ghlFormSubmitted = false;
-    fileEl.value = '';
-    var th = document.getElementById('aswThumb'); th.src = ''; th.style.display = 'none';
+  window.aswBook=function(){window.open(BOOKING,'_blank');};
+  window.aswRestart=function(){
+    imgOriginal=null;imgForAI=null;aiPromise=null;fileEl.value='';
+    var th=document.getElementById('aswThumb');th.src='';th.style.display='none';
     zone.classList.remove('has-photo');
-    document.getElementById('aswUTitle').textContent = 'Laadi üles selfie';
-    document.getElementById('aswUSub').textContent = 'Vali foto, kus su naeratus on selgelt nähtav, et saada täpseim analüüs.';
-    document.getElementById('aswStartBtn').disabled = true;
-    METS.forEach(function(m) {
-      document.getElementById(m.m).classList.remove('on');
-      document.getElementById(m.f).style.width = '0';
-      document.getElementById(m.v).textContent = '\u2014';
-    });
+    document.getElementById('aswUTitle').textContent='Laadi üles selfie';
+    document.getElementById('aswUSub').textContent='Vali foto, kus su naeratus on selgelt nähtav, et saada täpseim analüüs.';
+    document.getElementById('aswStartBtn').disabled=true;
+    document.getElementById('aswEmail').value='';
+    document.getElementById('aswRevBtn').disabled=true;
+    METS.forEach(function(m){document.getElementById(m.m).classList.remove('on');document.getElementById(m.f).style.width='0';document.getElementById(m.v).textContent='\u2014';});
     document.getElementById('aswAfterCard').classList.remove('aidone');
     document.getElementById('aswPovl').classList.add('on');
-    document.getElementById('aswAfter').src = '';
-    document.getElementById('aswBefore').src = '';
-    // Reload the GHL form iframe to reset it
-    var ghlIframe = document.getElementById('inline-x1dpfYlHpxGPWIGO1ZfV');
-    if (ghlIframe) ghlIframe.src = ghlIframe.src;
+    document.getElementById('aswAfter').src='';document.getElementById('aswBefore').src='';
     goTo(1);
   };
 })();
 </script>
-<!-- GHL form embed script — MUST load AFTER the widget script above -->
 <script src="https://link.msgsndr.com/js/form_embed.js"></script>
