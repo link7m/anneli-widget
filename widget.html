@@ -269,11 +269,10 @@
   // The code tries all of these. If none work, paste your exact selector below.
   // ═══════════════════════════════════════════════════════════════════
   var GHL_EMAIL_SELECTORS = [
-    '#asw ~ * input[type="email"]',           // any sibling section after widget
-    '.hl_wrapper input[type="email"]',         // common GHL wrapper
-    'form:not(#asw *) input[type="email"]',    // any form outside the widget
-    'input[name="email"]:not(#aswEmail)',       // any email input that's not ours
-    '#_builder-form input[type="email"]'        // GHL builder form ID
+    '#_builder-form input#email',              // exact match from inspected GHL form
+    '#_builder-form input[name="email"]',      // by name inside builder form
+    'input#email[data-q="email"]',             // GHL data attribute
+    'input[name="email"]:not(#aswEmail)'       // fallback: any email input that's not ours
   ];
   var imgOriginal=null,imgForAI=null,step=1;
   var MSGS=['Analüüsime hammaste kuju\u2026','Kontrollime naeratuse sümmeetriat\u2026','Mõõdame hambavahesid\u2026','Hindame värvitoonide ühtlust\u2026','Loome loomuliku eelvaate\u2026','Koostame tulemused\u2026','Peaaegu valmis\u2026'];
@@ -383,13 +382,15 @@
       nativeSetter.call(ghlInput, email);
       ghlInput.dispatchEvent(new Event('input', {bubbles: true}));
       ghlInput.dispatchEvent(new Event('change', {bubbles: true}));
-      // Find and click the submit button in the same form
-      var form = ghlInput.closest('form') || ghlInput.closest('.hl_wrapper') || ghlInput.parentElement;
-      var btn = form ? (form.querySelector('button[type="submit"]') || form.querySelector('button')) : null;
+      // Find and click the submit button — GHL uses div#_builder-form, not a <form> tag
+      var formWrap = ghlInput.closest('#_builder-form') || ghlInput.closest('.ghl-form-wrap') || ghlInput.closest('[id^="form-"]');
+      var btn = formWrap ? formWrap.querySelector('button[type="submit"]') : document.querySelector('#_builder-form button[type="submit"]');
       if (btn) {
-        setTimeout(function(){ btn.click(); }, 120);
+        setTimeout(function(){ btn.click(); }, 150);
+        console.log('[ASW] GHL form submitted with email:', email);
+      } else {
+        console.warn('[ASW] Found email input but not submit button!');
       }
-      console.log('[ASW] GHL form submitted with email:', email);
     } else {
       console.warn('[ASW] Could not find hidden GHL form! Check GHL_EMAIL_SELECTORS.');
     }
