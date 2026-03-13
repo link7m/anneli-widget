@@ -1,0 +1,173 @@
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<section class="urgX"
+  data-total="20"
+  data-initial-claimed="18"
+  data-duration="70980">
+  <div class="urgX-wrap" role="status" aria-live="polite" aria-atomic="true">
+    <div class="urgX-top">
+      <div class="urgX-left">
+        <div class="urgX-title"><span>Selle hooaja mahud</span></div>
+        <div class="urgX-nums" aria-label="Availability">
+          <span class="urgX-chip urgX-claimed">18 broneeritud</span>
+          <span class="urgX-sep">&middot;</span>
+          <span class="urgX-chip urgX-chip--ok urgX-leftnum">2 vaba</span>
+        </div>
+      </div>
+      <div class="urgX-pill">
+        L&otilde;peb: <span class="urgX-count">19:43:00</span>
+      </div>
+    </div>
+    <div class="urgX-progress">
+      <div class="urgX-bar" style="width:90%"></div>
+    </div>
+    <div class="urgX-activity">
+      <span class="urgX-actTxt">Kiirelt t&auml;itumas&hellip;</span>
+    </div>
+  </div>
+</section>
+<style>
+.urgX{display:flex;justify-content:center;padding:0 16px;}
+.urgX-wrap{
+  font-family:'DM Sans',system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  width:100%;
+  max-width:440px;
+  background:linear-gradient(150deg,#021e4e 0%,#032b6d 50%,#063580 100%);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:16px 18px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  box-shadow:0 12px 36px rgba(3,43,109,.22),0 2px 8px rgba(3,43,109,.08);
+  position:relative;
+  overflow:hidden;
+}
+.urgX-wrap::before{
+  content:'';
+  position:absolute;
+  width:160px;height:160px;
+  top:-50px;right:-40px;
+  background:radial-gradient(circle,rgba(201,169,110,.15) 0%,transparent 65%);
+  pointer-events:none;
+}
+.urgX-wrap::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,169,110,.4),transparent);
+  pointer-events:none;
+}
+.urgX-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.urgX-left{display:flex;flex-direction:column;gap:6px}
+.urgX-title span{
+  font-family:'Playfair Display',serif;
+  font-weight:400;
+  font-size:15px;
+  letter-spacing:.04em;
+  color:#e8d5b0;
+}
+.urgX-nums{display:flex;align-items:center;gap:8px;font-size:13px}
+.urgX-sep{color:rgba(255,255,255,.25);font-size:10px;}
+.urgX-chip{
+  padding:3px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.1);
+  font-size:12px;
+  color:rgba(255,255,255,.7);
+  font-weight:400;
+}
+.urgX-chip--ok{
+  background:rgba(201,169,110,.15);
+  border:1px solid rgba(201,169,110,.35);
+  color:#e8d5b0;
+  font-weight:700;
+}
+.urgX-pill{
+  font-size:12px;
+  font-weight:500;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.6);
+  padding:5px 10px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.urgX-count{
+  padding-left:2px;
+  font-weight:800;
+  color:#e8d5b0;
+  font-variant-numeric:tabular-nums;
+}
+.urgX-progress{
+  height:4px;
+  background:rgba(255,255,255,.1);
+  border-radius:999px;
+  overflow:hidden;
+}
+.urgX-bar{
+  height:100%;
+  background:linear-gradient(90deg,#c9a96e,#e8d5b0);
+  border-radius:999px;
+  transition:width .6s ease;
+}
+.urgX-activity{
+  font-size:12px;
+  color:rgba(255,255,255,.45);
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+@media(max-width:480px){
+  .urgX-wrap{padding:14px 14px;}
+  .urgX-title span{font-size:14px;}
+  .urgX-top{flex-wrap:wrap;gap:8px;}
+}
+</style>
+<script>
+(function(){
+  var pad2 = function(n){ return String(n|0).padStart(2,'0'); };
+  var fmt = function(sec){
+    sec = Math.max(0, Math.floor(sec));
+    var h = pad2(Math.floor(sec/3600));
+    var m = pad2(Math.floor((sec%3600)/60));
+    var s = pad2(sec%60);
+    return h+':'+m+':'+s;
+  };
+  var clamp = function(x,a,b){ return Math.min(b,Math.max(a,x)); };
+  var toInt = function(v,f){ var n=parseInt(v,10); return Number.isFinite(n)?n:f; };
+  document.querySelectorAll('.urgX').forEach(function(root){
+    var total       = toInt(root.dataset.total,18);
+    var initClaimed = clamp(toInt(root.dataset.initialClaimed,0),0,total);
+    var durSec      = toInt(root.getAttribute('data-duration'), 70980);
+    var countEl   = root.querySelector('.urgX-count');
+    var barEl     = root.querySelector('.urgX-bar');
+    var claimedEl = root.querySelector('.urgX-claimed');
+    var leftEl    = root.querySelector('.urgX-leftnum');
+    var actTxt    = root.querySelector('.urgX-actTxt');
+    function renderFromRemaining(remainingSec){
+      var rem = clamp(remainingSec, 0, durSec);
+      var progress = 1 - (rem / durSec);
+      var claimed = clamp(
+        Math.round(initClaimed + (total - initClaimed) * progress),
+        0,
+        total
+      );
+      var left = Math.max(0, total - claimed);
+      if (claimedEl) claimedEl.textContent = claimed + ' broneeritud';
+      if (leftEl)    leftEl.textContent    = left + ' vaba';
+      if (barEl)     barEl.style.width     = ((claimed/total)*100).toFixed(1) + '%';
+      if (countEl)   countEl.textContent   = fmt(rem);
+      if (actTxt) actTxt.textContent = 'Kiirelt t\u00e4itumas\u2026';
+    }
+    var endTime = Date.now() + durSec * 1000;
+    function tick(){
+      var remaining = Math.floor((endTime - Date.now()) / 1000);
+      renderFromRemaining(remaining);
+      if (remaining > 0) requestAnimationFrame(tick);
+    }
+    tick();
+  });
+})();
+</script>
