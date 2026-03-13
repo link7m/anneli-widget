@@ -245,32 +245,36 @@
   </div>
 </div>
 
-<!-- Hidden GHL form for split test tracking (user never sees this) -->
-<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-  <iframe
-    src="https://api.leadconnectorhq.com/widget/form/x1dpfYlHpxGPWIGO1ZfV"
-    style="width:100%;height:100%;border:none;"
-    id="inline-x1dpfYlHpxGPWIGO1ZfV"
-    data-layout="{'id':'INLINE'}"
-    data-trigger-type="alwaysShow"
-    data-trigger-value=""
-    data-activation-type="alwaysActivated"
-    data-activation-value=""
-    data-deactivation-type="neverDeactivate"
-    data-deactivation-value=""
-    data-form-name="AI naeratuse lead magnet form"
-    data-height="173"
-    data-layout-iframe-id="inline-x1dpfYlHpxGPWIGO1ZfV"
-    data-form-id="x1dpfYlHpxGPWIGO1ZfV"
-    title="AI naeratuse lead magnet form"
-  ></iframe>
-</div>
+<!--
+  SETUP:
+  1. In your GHL funnel page builder, add a Form element (just email field) to the same page as this widget
+  2. Hide the form's section/row with CSS: visibility:hidden; height:0; overflow:hidden; position:absolute;
+  3. Right-click the hidden form > Inspect Element to find the email input's selector
+  4. Update GHL_FORM_SELECTOR below if needed (see comment in the script)
+  5. Set the GHL form to "show message" after submit (not redirect), so the page doesn't navigate away
+-->
 
 <script>
 (function(){
-  var WEBHOOK='https://services.leadconnectorhq.com/hooks/oj6ylS5OYve8owNoVnm5/webhook-trigger/e8578777-489a-4423-92f2-bf7134ac0597';
   var BOOKING='https://anneli.laminaadid.ee/kalender-ai';
   var AI_URL='https://anneli.andreas-b42.workers.dev/';
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GHL FORM SELECTOR — update this if needed!
+  // Right-click your hidden GHL form on the page > Inspect > find the
+  // email input. Common selectors for native GHL forms:
+  //   'input[name="email"]'
+  //   '.hl_wrapper input[type="email"]'
+  //   '#_builder-form input[type="email"]'
+  // The code tries all of these. If none work, paste your exact selector below.
+  // ═══════════════════════════════════════════════════════════════════
+  var GHL_EMAIL_SELECTORS = [
+    '#asw ~ * input[type="email"]',           // any sibling section after widget
+    '.hl_wrapper input[type="email"]',         // common GHL wrapper
+    'form:not(#asw *) input[type="email"]',    // any form outside the widget
+    'input[name="email"]:not(#aswEmail)',       // any email input that's not ours
+    '#_builder-form input[type="email"]'        // GHL builder form ID
+  ];
   var imgOriginal=null,imgForAI=null,step=1;
   var MSGS=['Analüüsime hammaste kuju\u2026','Kontrollime naeratuse sümmeetriat\u2026','Mõõdame hambavahesid\u2026','Hindame värvitoonide ühtlust\u2026','Loome loomuliku eelvaate\u2026','Koostame tulemused\u2026','Peaaegu valmis\u2026'];
   var METS=[{m:'aswM0',f:'aswMf0',v:'aswMv0',t:82,d:500},{m:'aswM1',f:'aswMf1',v:'aswMv1',t:76,d:1050},{m:'aswM2',f:'aswMf2',v:'aswMv2',t:89,d:1700},{m:'aswM3',f:'aswMf3',v:'aswMv3',t:94,d:2450}];
@@ -359,20 +363,38 @@
     var v=document.getElementById('aswEmail').value;
     document.getElementById('aswRevBtn').disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   };
+  // Find the hidden GHL form's email input
+  function findGhlEmailInput() {
+    for (var i = 0; i < GHL_EMAIL_SELECTORS.length; i++) {
+      var el = document.querySelector(GHL_EMAIL_SELECTORS[i]);
+      if (el && el !== document.getElementById('aswEmail')) return el;
+    }
+    return null;
+  }
+
   window.aswSubmit=function(){
     var email=document.getElementById('aswEmail').value.trim();
-    // 1) Send contact to GHL via webhook (creates the contact)
-    fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'ai-naeratus-widget',timestamp:new Date().toISOString(),tags:['laminaadid-huvitatud','ai-widget']})}).catch(function(){});
-    // 2) Try to trigger GHL split test tracking via the hidden form's postMessage system.
-    //    form_embed.js on the page listens for these messages. We simulate what the
-    //    GHL form iframe would send after a successful submission.
-    try {
-      // Simulate "set-sticky-contacts" — tells form_embed.js a lead was collected
-      window.postMessage(JSON.stringify(['set-sticky-contacts',JSON.stringify({email:email})]),'*');
-      // Also set the localStorage flag that form_embed.js normally sets
-      try { localStorage.setItem('leadCollected','true'); } catch(e){}
-    } catch(e){ console.error('[ASW] tracking error:', e); }
-    // 3) Continue with widget flow
+
+    // Fill and submit the hidden native GHL form
+    var ghlInput = findGhlEmailInput();
+    if (ghlInput) {
+      // Use native setter so GHL's framework (Vue/React) picks up the value
+      var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      nativeSetter.call(ghlInput, email);
+      ghlInput.dispatchEvent(new Event('input', {bubbles: true}));
+      ghlInput.dispatchEvent(new Event('change', {bubbles: true}));
+      // Find and click the submit button in the same form
+      var form = ghlInput.closest('form') || ghlInput.closest('.hl_wrapper') || ghlInput.parentElement;
+      var btn = form ? (form.querySelector('button[type="submit"]') || form.querySelector('button')) : null;
+      if (btn) {
+        setTimeout(function(){ btn.click(); }, 120);
+      }
+      console.log('[ASW] GHL form submitted with email:', email);
+    } else {
+      console.warn('[ASW] Could not find hidden GHL form! Check GHL_EMAIL_SELECTORS.');
+    }
+
+    // Continue with widget flow
     document.getElementById('aswBefore').src=imgOriginal||'';
     goTo(4);
     if(AI_URL && aiPromise){
@@ -417,4 +439,3 @@
   };
 })();
 </script>
-<script src="https://link.msgsndr.com/js/form_embed.js"></script>
