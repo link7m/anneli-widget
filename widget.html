@@ -377,20 +377,44 @@
     // Fill and submit the hidden native GHL form
     var ghlInput = findGhlEmailInput();
     if (ghlInput) {
-      // Simulate real typing via execCommand — triggers Vue/React bindings reliably
+      // Temporarily unhide so focus + execCommand work
+      var hiddenParent = ghlInput.closest('[style*="visibility"],[style*="overflow"][style*="height:0"],section,div.c-form');
+      var origStyles = [];
+      var el = ghlInput;
+      while (el && el !== document.body) {
+        var cs = window.getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.overflow === 'hidden' && el.offsetHeight === 0) {
+          origStyles.push({el: el, css: el.style.cssText});
+          el.style.cssText += ';visibility:visible!important;display:block!important;height:auto!important;overflow:visible!important;position:absolute!important;left:-9999px!important;top:0!important;';
+        }
+        el = el.parentElement;
+      }
+      // Now focus and type
       ghlInput.focus();
       ghlInput.value = '';
-      ghlInput.dispatchEvent(new Event('input', {bubbles: true}));
-      document.execCommand('insertText', false, email);
-      // Click submit after framework processes
-      setTimeout(function(){
-        var formWrap = ghlInput.closest('#_builder-form') || ghlInput.closest('.ghl-form-wrap') || ghlInput.closest('[id^="form-"]');
-        var btn = formWrap ? formWrap.querySelector('button[type="submit"]') : document.querySelector('#_builder-form button[type="submit"]');
-        if (btn) { btn.click(); console.log('[ASW] GHL submit clicked, email:', email); }
-        else { console.warn('[ASW] No submit button found'); }
-      }, 400);
+      var inserted = document.execCommand('insertText', false, email);
+      // Fallback: if execCommand didn't work, use native setter + events
+      if (!inserted || ghlInput.value !== email) {
+        var nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        nativeSetter.call(ghlInput, email);
+        ghlInput.dispatchEvent(new Event('input', {bubbles: true}));
+        ghlInput.dispatchEvent(new Event('change', {bubbles: true}));
+      }
+      console.log('[ASW] GHL input value set to:', ghlInput.value);
+      // Click submit
+      var btn = document.querySelector('#_builder-form button[type="submit"]');
+      if (btn) {
+        setTimeout(function(){
+          btn.click();
+          console.log('[ASW] GHL submit clicked, email:', email);
+          // Rehide after submission processes
+          setTimeout(function(){
+            origStyles.forEach(function(s){ s.el.style.cssText = s.css; });
+          }, 500);
+        }, 200);
+      }
     } else {
-      console.warn('[ASW] No GHL form found — check that the hidden form is on the page');
+      console.warn('[ASW] No GHL form found');
     }
 
     // Continue with widget flow
