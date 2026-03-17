@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2ndLove — Tampere's Pre-Loved Luxury Boutique</title>
+  <meta name="description" content="Tampere's most curated pre-loved luxury boutique. Sell your designer pieces or get early access to authenticated luxury fashion.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #d4b96a;
+      --dusty-rose: #EDD5C8;
+      --champagne: #F5EDD8;
+      --charcoal: #1F1F1F;
+      --stone: #8C8C8C;
+      --warm-white: #FEFCF8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--charcoal);
+      background: var(--champagne);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1, h2, h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      background: var(--champagne);
+      position: relative;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 8px 20px;
+      margin-bottom: 40px;
+    }
+
+    .hero__logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 10vw, 96px);
+      font-weight: 600;
+      color: var(--charcoal);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .hero__logo span {
+      color: var(--gold);
+    }
+
+    .hero__tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--stone);
+      max-width: 520px;
+      margin: 0 auto 48px;
+    }
+
+    .hero__divider {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0 auto 48px;
+    }
+
+    .hero__intro {
+      font-size: 16px;
+      color: var(--charcoal);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--stone);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero__scroll::after {
+      content: '';
+      width: 1px;
+      height: 32px;
+      background: var(--gold);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* ===== VALUE PROPS ===== */
+    .values {
+      padding: 80px 24px;
+      background: var(--dusty-rose);
+    }
+
+    .values__inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .values__heading {
+      text-align: center;
+      font-size: clamp(28px, 5vw, 42px);
+      color: var(--charcoal);
+      margin-bottom: 12px;
+    }
+
+    .values__sub {
+      text-align: center;
+      font-size: 15px;
+      color: var(--stone);
+      margin-bottom: 56px;
+    }
+
+    .values__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+
+    .value-card {
+      text-align: center;
+      padding: 32px 16px;
+      background: rgba(254, 252, 248, 0.5);
+      border-radius: 4px;
+    }
+
+    .value-card__icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+      color: var(--gold);
+    }
+
+    .value-card__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--charcoal);
+    }
+
+    .value-card__text {
+      font-size: 14px;
+      color: var(--stone);
+      line-height: 1.7;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      padding: 80px 24px;
+      background: var(--champagne);
+    }
+
+    .cta-section__inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .cta-section__heading {
+      text-align: center;
+      font-size: clamp(28px, 5vw, 42px);
+      color: var(--charcoal);
+      margin-bottom: 48px;
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 680px) {
+      .cta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cta-card {
+      background: var(--warm-white);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      padding: 48px 36px;
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+
+    .cta-card:hover {
+      border-color: var(--gold);
+    }
+
+    .cta-card__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .cta-card__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+    }
+
+    .cta-card__text {
+      font-size: 15px;
+      color: var(--stone);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-card__form-placeholder {
+      background: var(--champagne);
+      border: 2px dashed rgba(201, 168, 76, 0.3);
+      padding: 40px 24px;
+      font-size: 13px;
+      color: var(--stone);
+      font-style: italic;
+    }
+
+    .cta-card__form-placeholder code {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ===== HOW IT WORKS (SELLERS) ===== */
+    .how-it-works {
+      padding: 80px 24px;
+      background: var(--dusty-rose);
+    }
+
+    .how-it-works__inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .how-it-works__heading {
+      font-size: clamp(28px, 5vw, 42px);
+      color: var(--charcoal);
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    @media (max-width: 600px) {
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    .step__number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .step__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+
+    .step__text {
+      font-size: 14px;
+      color: var(--stone);
+      line-height: 1.7;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 48px 24px;
+      background: var(--charcoal);
+      text-align: center;
+    }
+
+    .footer__logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--warm-white);
+      margin-bottom: 4px;
+    }
+
+    .footer__logo span {
+      color: var(--gold);
+    }
+
+    .footer__location {
+      font-size: 13px;
+      color: var(--stone);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .footer__social {
+      margin-bottom: 24px;
+    }
+
+    .footer__social a {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .footer__social a:hover {
+      background: var(--gold);
+      color: var(--charcoal);
+    }
+
+    .footer__copy {
+      font-size: 12px;
+      color: var(--stone);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__badge">Opening Soon in Tampere</div>
+    <h1 class="hero__logo"><span>2nd</span>Love</h1>
+    <p class="hero__tagline">Where great pieces find their second story</p>
+    <div class="hero__divider"></div>
+    <p class="hero__intro">
+      Tampere's most curated pre-loved luxury boutique. Authenticated designer fashion —
+      thoughtfully selected, beautifully presented, and ready for its next chapter.
+    </p>
+    <a href="#get-started" class="hero__scroll">Discover</a>
+  </section>
+
+  <!-- ===== VALUE PROPS ===== -->
+  <section class="values">
+    <div class="values__inner">
+      <h2 class="values__heading">Why 2ndLove</h2>
+      <p class="values__sub">Luxury, curated, local.</p>
+      <div class="values__grid">
+        <div class="value-card">
+          <div class="value-card__icon">&#10003;</div>
+          <h3 class="value-card__title">Authenticated</h3>
+          <p class="value-card__text">Every luxury item is verified for authenticity before it reaches the floor.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-card__icon">&#9830;</div>
+          <h3 class="value-card__title">Curated</h3>
+          <p class="value-card__text">We don't take everything — only pieces worth a second love.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-card__icon">&#9825;</div>
+          <h3 class="value-card__title">Fair Commission</h3>
+          <p class="value-card__text">Transparent pricing. Real-time tracking. You earn what your pieces deserve.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-card__icon">&#9752;</div>
+          <h3 class="value-card__title">Sustainable</h3>
+          <p class="value-card__text">The most stylish thing you can do — give luxury fashion a longer life.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA SECTION ===== -->
+  <section class="cta-section" id="get-started">
+    <div class="cta-section__inner">
+      <h2 class="cta-section__heading">Get Involved</h2>
+      <div class="cta-grid">
+
+        <!-- SELLER CTA -->
+        <div class="cta-card">
+          <div class="cta-card__label">For Sellers</div>
+          <h3 class="cta-card__title">Sell With Us</h3>
+          <p class="cta-card__text">
+            Have designer pieces you no longer wear? Bring them to 2ndLove — we'll handle the rest.
+            Fair commission, real-time tracking, effortless selling.
+          </p>
+
+          <!-- ========================================== -->
+          <!-- GHL FORM EMBED: SELLER SIGNUP              -->
+          <!-- Replace this placeholder with your         -->
+          <!-- GoHighLevel form embed code                -->
+          <!-- ========================================== -->
+          <div class="cta-card__form-placeholder">
+            Paste your GoHighLevel "Become a Seller" form embed here
+            <code>&lt;!-- GHL seller form embed --&gt;</code>
+          </div>
+
+        </div>
+
+        <!-- BUYER CTA -->
+        <div class="cta-card">
+          <div class="cta-card__label">For Shoppers</div>
+          <h3 class="cta-card__title">Get Early Access</h3>
+          <p class="cta-card__text">
+            Be the first to shop when we launch. Sign up now and get exclusive early
+            access and insider discounts before anyone else.
+          </p>
+
+          <!-- ========================================== -->
+          <!-- GHL FORM EMBED: BUYER / EARLY ACCESS       -->
+          <!-- Replace this placeholder with your         -->
+          <!-- GoHighLevel form embed code                -->
+          <!-- ========================================== -->
+          <div class="cta-card__form-placeholder">
+            Paste your GoHighLevel "Early Access" form embed here
+            <code>&lt;!-- GHL buyer form embed --&gt;</code>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works">
+    <div class="how-it-works__inner">
+      <h2 class="how-it-works__heading">How Selling Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Bring Your Pieces</h3>
+          <p class="step__text">Drop off your designer items at our Tampere boutique or request a pickup.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">2</div>
+          <h3 class="step__title">We Curate & Price</h3>
+          <p class="step__text">We authenticate, photograph, and price each item for maximum value.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">3</div>
+          <h3 class="step__title">You Get Paid</h3>
+          <p class="step__text">Track your items in real time. When they sell, you earn — simple as that.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__logo"><span>2nd</span>Love</div>
+    <p class="footer__location">Tampere, Finland</p>
+    <div class="footer__social">
+      <a href="https://instagram.com/2ndlovetampere" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <p class="footer__copy">&copy; 2026 2ndLove. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
