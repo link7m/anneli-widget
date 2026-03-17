@@ -307,8 +307,15 @@
     /* Style GHL iframes inside modals */
     .modal__body iframe {
       width: 100% !important;
-      min-height: 400px;
       border: none;
+    }
+
+    #inline-DAOS3ihk8pyJpg5YOQBf {
+      min-height: 390px;
+    }
+
+    #inline-Oj4HDCbkKK9IKAwIzqGm {
+      min-height: 366px;
     }
 
     /* ===== VALUE PROPS ===== */
@@ -610,9 +617,24 @@
         <p class="modal__visual-sub">Your closet deserves a refresh. We handle everything — you just earn.</p>
       </div>
 
-      <!-- PASTE YOUR GHL SELLER FORM EMBED CODE BELOW -->
       <div class="modal__body">
-        <!-- GHL seller form embed goes here -->
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/form/DAOS3ihk8pyJpg5YOQBf"
+          style="width:100%;height:100%;border:none;border-radius:0px"
+          id="inline-DAOS3ihk8pyJpg5YOQBf"
+          data-layout="{'id':'INLINE'}"
+          data-trigger-type="alwaysShow"
+          data-trigger-value=""
+          data-activation-type="alwaysActivated"
+          data-activation-value=""
+          data-deactivation-type="neverDeactivate"
+          data-deactivation-value=""
+          data-form-name="Seller"
+          data-height="390"
+          data-layout-iframe-id="inline-DAOS3ihk8pyJpg5YOQBf"
+          data-form-id="DAOS3ihk8pyJpg5YOQBf"
+          title="Seller"
+        ></iframe>
       </div>
     </div>
   </div>
@@ -633,9 +655,24 @@
         <p class="modal__visual-sub">Be first in line when we drop new pieces. Exclusive access, insider prices.</p>
       </div>
 
-      <!-- PASTE YOUR GHL BUYER FORM EMBED CODE BELOW -->
       <div class="modal__body">
-        <!-- GHL buyer form embed goes here -->
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/form/Oj4HDCbkKK9IKAwIzqGm"
+          style="width:100%;height:100%;border:none;border-radius:0px"
+          id="inline-Oj4HDCbkKK9IKAwIzqGm"
+          data-layout="{'id':'INLINE'}"
+          data-trigger-type="alwaysShow"
+          data-trigger-value=""
+          data-activation-type="alwaysActivated"
+          data-activation-value=""
+          data-deactivation-type="neverDeactivate"
+          data-deactivation-value=""
+          data-form-name="Buyer"
+          data-height="366"
+          data-layout-iframe-id="inline-Oj4HDCbkKK9IKAwIzqGm"
+          data-form-id="Oj4HDCbkKK9IKAwIzqGm"
+          title="Buyer"
+        ></iframe>
       </div>
     </div>
   </div>
@@ -730,6 +767,7 @@
     <p class="footer__copy">&copy; 2026 2ndLove. All rights reserved.</p>
   </footer>
 
+  <script src="https://link.msgsndr.com/js/form_embed.js"></script>
   <script>
     function openModal(type) {
       const id = type === 'seller' ? 'sellerModal' : 'buyerModal';
