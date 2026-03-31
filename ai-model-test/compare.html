@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dental Veneer AI Model Comparison</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #111; color: #eee; padding: 20px; }
+  h1 { text-align: center; margin-bottom: 10px; font-size: 1.5em; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+  .controls { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+  .controls select, .controls button { padding: 8px 16px; border-radius: 6px; border: 1px solid #444; background: #222; color: #eee; font-size: 14px; cursor: pointer; }
+  .controls button { background: #2563eb; border-color: #2563eb; }
+  .controls button:hover { background: #1d4ed8; }
+
+  .grid { display: grid; gap: 20px; }
+  .grid.by-prompt { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .grid.by-model { grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
+
+  .card { background: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+  .card-header { padding: 12px 16px; background: #222; border-bottom: 1px solid #333; }
+  .card-header h3 { font-size: 14px; color: #aaa; }
+  .card-header .model-name { color: #60a5fa; font-weight: 600; }
+  .card-header .prompt-name { color: #a78bfa; }
+  .card-header .time { color: #888; font-size: 12px; float: right; }
+
+  .card-images { display: flex; }
+  .card-images .side { flex: 1; position: relative; }
+  .card-images .side img { width: 100%; display: block; }
+  .card-images .label { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+
+  .section-title { font-size: 1.2em; margin: 30px 0 15px; padding-bottom: 8px; border-bottom: 1px solid #333; }
+
+  .error { color: #f87171; font-size: 13px; padding: 20px; text-align: center; }
+  .loading { text-align: center; padding: 60px; color: #666; }
+  #drop-zone { border: 2px dashed #444; border-radius: 12px; padding: 40px; text-align: center; color: #666; margin-bottom: 30px; transition: all 0.2s; }
+  #drop-zone.drag-over { border-color: #2563eb; color: #2563eb; background: rgba(37,99,235,0.1); }
+</style>
+</head>
+<body>
+
+<h1>Dental Veneer AI — Model Comparison</h1>
+<p class="subtitle">Side-by-side comparison of models and prompts</p>
+
+<div id="drop-zone">
+  Drop your <code>results.json</code> file here, or <button onclick="document.getElementById('file-input').click()">browse</button>
+  <input type="file" id="file-input" accept=".json" style="display:none">
+</div>
+
+<div class="controls" id="controls" style="display:none">
+  <select id="filter-model"><option value="all">All Models</option></select>
+  <select id="filter-prompt"><option value="all">All Prompts</option></select>
+  <select id="filter-image"><option value="all">All Images</option></select>
+  <select id="group-by">
+    <option value="image">Group by Image</option>
+    <option value="model">Group by Model</option>
+    <option value="prompt">Group by Prompt</option>
+  </select>
+</div>
+
+<div id="results" class="grid by-prompt"></div>
+
+<script>
+let allResults = [];
+
+// File input handlers
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+
+// Also try auto-loading results.json
+fetch('results.json').then(r => r.ok ? r.json() : Promise.reject()).then(data => {
+  allResults = data;
+  dropZone.style.display = 'none';
+  initFilters();
+  render();
+}).catch(() => {});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      allResults = JSON.parse(e.target.result);
+      dropZone.style.display = 'none';
+      initFilters();
+      render();
+    } catch(err) { alert('Invalid JSON file'); }
+  };
+  reader.readAsText(file);
+}
+
+function initFilters() {
+  document.getElementById('controls').style.display = 'flex';
+  const models = [...new Set(allResults.map(r => r.model))];
+  const prompts = [...new Set(allResults.map(r => r.prompt_name))];
+  const images = [...new Set(allResults.map(r => r.input_image))];
+
+  fillSelect('filter-model', models);
+  fillSelect('filter-prompt', prompts);
+  fillSelect('filter-image', images);
+
+  document.querySelectorAll('.controls select').forEach(s => s.addEventListener('change', render));
+}
+
+function fillSelect(id, values) {
+  const sel = document.getElementById(id);
+  values.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+}
+
+function render() {
+  const filterModel = document.getElementById('filter-model').value;
+  const filterPrompt = document.getElementById('filter-prompt').value;
+  const filterImage = document.getElementById('filter-image').value;
+  const groupBy = document.getElementById('group-by').value;
+
+  let filtered = allResults.filter(r => {
+    if (filterModel !== 'all' && r.model !== filterModel) return false;
+    if (filterPrompt !== 'all' && r.prompt_name !== filterPrompt) return false;
+    if (filterImage !== 'all' && r.input_image !== filterImage) return false;
+    return true;
+  });
+
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+
+  // Group results
+  const groups = {};
+  filtered.forEach(r => {
+    const key = r[groupBy === 'image' ? 'input_image' : groupBy === 'model' ? 'model' : 'prompt_name'];
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r);
+  });
+
+  for (const [groupName, items] of Object.entries(groups)) {
+    const title = document.createElement('h2');
+    title.className = 'section-title';
+    title.textContent = `${groupBy}: ${groupName}`;
+    container.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(400px, 1fr))';
+    grid.style.gap = '16px';
+    grid.style.marginBottom = '30px';
+
+    items.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const inputPath = `inputs/${r.input_image}.jpg`;
+      const outputPath = r.output_file ? r.output_file.split('ai-model-test/')[1] || r.output_file : null;
+
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="time">${r.time_seconds}s</span>
+          <h3><span class="model-name">${r.model}</span> / <span class="prompt-name">${r.prompt_name}</span></h3>
+        </div>
+        ${r.success && outputPath ? `
+          <div class="card-images">
+            <div class="side"><span class="label">Before</span><img src="${inputPath}" alt="before"></div>
+            <div class="side"><span class="label">After</span><img src="${outputPath}" alt="after"></div>
+          </div>
+        ` : `<div class="error">Failed: ${r.error || 'unknown error'}</div>`}
+      `;
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
+  }
+}
+</script>
+</body>
+</html>

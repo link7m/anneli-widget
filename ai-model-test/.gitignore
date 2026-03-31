@@ -1,0 +1,4 @@
+inputs/
+outputs/
+results.json
+__pycache__/
