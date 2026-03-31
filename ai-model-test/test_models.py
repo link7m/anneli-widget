@@ -47,36 +47,50 @@ MODELS = {
 # ── Prompts to test ─────────────────────────────────────────────────────────
 # Each prompt targets a different strategy for natural-looking veneer results
 
+# ── Prompts to test ─────────────────────────────────────────────────────────
+# Goal: natural, subtle improvement. Must NOT scare leads or look fake.
+# The person should think "that looks like ME but better" not "who is that?"
+#
+# Key principles for lead-magnet prompts:
+# - SUBTLE over dramatic (people get scared by big changes)
+# - Warm natural white, NOT bleach white (A2 shade, not B1)
+# - Keep tooth CHARACTER — slight size differences, natural shapes
+# - Never change lips, face shape, skin — instant uncanny valley
+# - "Healthy" framing, not "cosmetic surgery" framing
+
 PROMPTS = {
-    "p1_current": (
+    "p1_current_production": (
         "Whiten and straighten the teeth moderately. Keep the exact same tooth size "
         "and shape. Align the dental midline so upper and lower teeth centerlines match. "
         "Natural white color, not bright white. Keep some natural irregularities and "
         "slight imperfections. Do not touch anything else on the face."
     ),
-    "p2_minimal": (
-        "Make the teeth slightly whiter and more aligned. Keep everything else in the "
-        "photo exactly the same. The result should look like a natural, healthy smile — "
-        "not cosmetically perfect."
+    "p2_subtle_healthy": (
+        "Make the teeth look clean, healthy, and well-cared-for. Slightly whiter and "
+        "slightly more even, but keep the natural tooth shapes and sizes. The smile "
+        "should still look like the same person — just with better dental hygiene. "
+        "Do not change the face, lips, skin, or anything else."
     ),
-    "p3_veneer_specific": (
-        "Edit only the teeth to look like high-quality porcelain dental veneers were "
-        "applied. Teeth should be naturally white (shade B1), evenly shaped, and properly "
-        "aligned. Maintain the original tooth proportions and gumline. Do not alter the "
-        "face, lips, skin, lighting, or background in any way."
+    "p3_gentle_veneer": (
+        "Subtly improve the teeth to look like natural, high-quality dental veneers. "
+        "Use a warm, natural white — not bright or artificial. Keep the original tooth "
+        "proportions and slight natural variations between teeth. The result should "
+        "look believable, like this person just had great dental work done. Do not "
+        "alter the face, lips, skin, lighting, or background."
     ),
-    "p4_dentist_language": (
-        "Apply a cosmetic dental transformation to the teeth only: correct alignment, "
-        "close any gaps, even out tooth sizes, and whiten to a natural shade (not "
-        "Hollywood white). Preserve the person's natural lip shape, facial features, "
-        "skin tone, and the exact same background. The smile should look professionally "
-        "done but believable."
+    "p4_warm_natural": (
+        "Gently whiten the teeth to a warm, natural shade and slightly improve "
+        "alignment. Keep the teeth looking real — maintain natural size differences "
+        "and organic shapes. The change should be subtle enough that someone might "
+        "think 'you look great today' rather than 'you got your teeth done.' "
+        "Do not touch anything else in the photo."
     ),
-    "p5_before_after": (
-        "This is a before photo of a dental patient. Transform it into the after photo "
-        "showing results of premium porcelain veneer treatment. The teeth should be "
-        "straight, uniform, and a natural white color. Everything else — face shape, "
-        "skin, lips, hair, background, lighting — must remain completely identical."
+    "p5_professional_clean": (
+        "Make the teeth look like the person just had a professional dental cleaning "
+        "and minor cosmetic improvements. Slightly whiter, slightly straighter, any "
+        "gaps reduced. Keep the natural warmth of the tooth color — avoid any blue-white "
+        "or artificial look. Maintain the exact same face, lips, skin tone, and expression. "
+        "The improvement should be noticeable but not dramatic."
     ),
 }
 

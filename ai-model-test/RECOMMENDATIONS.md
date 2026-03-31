@@ -1,8 +1,19 @@
 # Dental Veneer AI Model — Research & Recommendations
 
+## The #1 Rule: Don't Scare the Lead
+
+This is a **lead magnet**, not a medical tool. The goal is:
+- Person sees result and thinks **"oh nice, I'd want that"**
+- NOT "holy shit that's not me" or "that looks fake"
+
+**Subtle > Dramatic.** A lead who thinks the result is achievable will book.
+A lead who thinks it looks fake will bounce.
+
+---
+
 ## Models Evaluated
 
-### 1. `black-forest-labs/flux-kontext-pro` ⭐ RECOMMENDED
+### 1. `black-forest-labs/flux-kontext-pro` — RECOMMENDED
 - **Type:** Instruction-based image editing (no mask needed)
 - **Cost:** ~$0.05/image
 - **Speed:** ~10-20s
@@ -17,101 +28,105 @@
 - **Type:** Premium version of kontext-pro
 - **Cost:** ~$0.10/image (2x kontext-pro)
 - **Speed:** ~15-30s
-- **When to use:** If kontext-pro results aren't detailed enough. The "max" version has better fine detail handling which could matter for individual tooth rendering.
-- **Trade-off:** 2x cost for incremental improvement
+- **When to use:** If kontext-pro results aren't detailed enough on teeth detail.
+- **Trade-off:** 2x cost for incremental improvement. Test before committing.
 
-### 3. `ideogram-ai/ideogram-v3-quality` (inpainting mode)
-- **Type:** Inpainting with mask
-- **Complexity:** HIGH — requires teeth segmentation mask
-- **Why NOT recommended:** You'd need to either manually create masks or add a teeth segmentation step (MediaPipe Face Mesh or similar), adding latency and failure points. Not worth it when kontext-pro handles instruction-based editing well.
-
-### 4. `bria/genfill`
-- **Type:** Mask-based inpainting
-- **Same issue as ideogram:** Requires a teeth mask, adding pipeline complexity.
-
-### 5. `google/nano-banana-pro`
-- **Type:** Instruction-based editing (newer)
-- **Worth testing:** Similar approach to kontext — instruction-based, no mask needed.
-- **Status:** Newer model, less battle-tested.
+### 3. Inpainting models (ideogram, bria/genfill) — NOT recommended
+- Require a teeth segmentation mask (extra pipeline, extra failure modes)
+- Overkill for a lead magnet widget
 
 ---
 
-## Best Prompts (Ranked by Expected Quality)
+## Prompts — Ranked for Lead Conversion (Subtle + Natural)
 
-### 🥇 P3 — Veneer-Specific (RECOMMENDED)
+### P4 "Warm Natural" — TOP PICK for lead magnets
 ```
-Edit only the teeth to look like high-quality porcelain dental veneers were applied.
-Teeth should be naturally white (shade B1), evenly shaped, and properly aligned.
-Maintain the original tooth proportions and gumline. Do not alter the face, lips,
-skin, lighting, or background in any way.
+Gently whiten the teeth to a warm, natural shade and slightly improve
+alignment. Keep the teeth looking real — maintain natural size differences
+and organic shapes. The change should be subtle enough that someone might
+think 'you look great today' rather than 'you got your teeth done.'
+Do not touch anything else in the photo.
 ```
-**Why:** Uses dental terminology ("shade B1", "gumline") which grounds the model in realistic results. Explicitly names veneers so the model has a clear reference point.
+**Why best for leads:** The "you look great today" framing literally tells the model
+to aim for subtle. Warm white avoids the fake blue-white look. Keeps natural
+variations so the person still recognizes their own smile.
 
-### 🥈 P4 — Dentist Language
+### P3 "Gentle Veneer" — Runner-up
 ```
-Apply a cosmetic dental transformation to the teeth only: correct alignment,
-close any gaps, even out tooth sizes, and whiten to a natural shade (not
-Hollywood white). Preserve the person's natural lip shape, facial features,
-skin tone, and the exact same background. The smile should look professionally
-done but believable.
+Subtly improve the teeth to look like natural, high-quality dental veneers.
+Use a warm, natural white — not bright or artificial. Keep the original tooth
+proportions and slight natural variations between teeth. The result should
+look believable, like this person just had great dental work done. Do not
+alter the face, lips, skin, lighting, or background.
 ```
-**Why:** Very specific about what to fix (alignment, gaps, sizes, color). The "not Hollywood white" instruction is key.
+**Why good:** "Believable" and "great dental work" are the right anchors.
+Mentions veneers which gives the model a clear reference.
 
-### 🥉 P1 — Current Production Prompt
+### P5 "Professional Clean" — Safe backup
+```
+Make the teeth look like the person just had a professional dental cleaning
+and minor cosmetic improvements. Slightly whiter, slightly straighter, any
+gaps reduced. Keep the natural warmth of the tooth color — avoid any blue-white
+or artificial look. Maintain the exact same face, lips, skin tone, and expression.
+The improvement should be noticeable but not dramatic.
+```
+**Why:** "Professional cleaning" is the most conservative framing. Good for
+people whose teeth are already decent — won't over-edit.
+
+### P2 "Subtle Healthy" — Ultra-conservative
+```
+Make the teeth look clean, healthy, and well-cared-for. Slightly whiter and
+slightly more even, but keep the natural tooth shapes and sizes. The smile
+should still look like the same person — just with better dental hygiene.
+Do not change the face, lips, skin, or anything else.
+```
+**Why:** Most subtle option. "Better dental hygiene" framing = minimal changes.
+Might under-deliver for people with very crooked teeth.
+
+### P1 "Current Production" — Baseline
 ```
 Whiten and straighten the teeth moderately. Keep the exact same tooth size and
 shape. Align the dental midline so upper and lower teeth centerlines match.
 Natural white color, not bright white. Keep some natural irregularities and
 slight imperfections. Do not touch anything else on the face.
 ```
-**Why:** Good baseline, but "keep some irregularities" might confuse the model — it's being told to both fix AND keep imperfections.
-
-### P5 — Before/After Framing
-```
-This is a before photo of a dental patient. Transform it into the after photo
-showing results of premium porcelain veneer treatment...
-```
-**Why:** Framing as "before/after" gives the model strong context. Worth testing.
-
-### P2 — Minimal (backup)
-```
-Make the teeth slightly whiter and more aligned...
-```
-**Why:** Most conservative. Good for subtle changes but might under-deliver.
+**Issue:** "Keep irregularities" contradicts "straighten." Mixed signals to the model.
 
 ---
+
+## How to Test
+
+```bash
+# 1. Add your test photos to ai-model-test/inputs/ (or use the sample downloader)
+python3 download_test_images.py
+
+# 2. Quick test: all prompts on 1 image
+python3 test_models.py --token r8_YOUR_TOKEN --models flux-kontext-pro --images smile1
+
+# 3. Compare results in browser
+# Open compare.html — it loads results.json automatically
+
+# 4. Once you pick a winner prompt, test on all images for consistency
+python3 test_models.py --token r8_YOUR_TOKEN --prompts p4_warm_natural --images smile1 smile2 smile3
+
+# 5. Optional: test kontext-max with winner prompt
+python3 test_models.py --token r8_YOUR_TOKEN --models flux-kontext-max --prompts p4_warm_natural
+```
+
+## What to Look For When Comparing
+
+When reviewing outputs, check:
+1. **Does it still look like the same person?** (face identity preserved)
+2. **Are the teeth believably white?** (warm white, not bleach/blue)
+3. **Do the teeth still look natural?** (slight variations, not perfect chiclets)
+4. **Are the lips unchanged?** (common failure: model reshapes lips)
+5. **Would YOU book a dentist appointment from this?** (the real test)
 
 ## Recommendation Summary
 
 | Aspect | Recommendation |
 |--------|---------------|
-| **Model** | `flux-kontext-pro` (upgrade to `flux-kontext-max` only if detail is insufficient) |
-| **Prompt** | P3 (veneer-specific) or P4 (dentist language) |
-| **Preprocessing** | Compress to 640px max, JPEG 80% quality (your current approach is fine) |
+| **Model** | `flux-kontext-pro` (try `max` only if detail is lacking) |
+| **Prompt** | P4 "warm natural" (subtle, lead-friendly) |
+| **Preprocessing** | Compress to 640px max, JPEG 80% (current approach is fine) |
 | **Parameters** | `aspect_ratio: match_input_image`, `output_format: jpg`, `safety_tolerance: 6` |
-
-## How to Run Tests
-
-```bash
-# Quick: test all prompts on 1 image with kontext-pro
-python3 test_models.py --token r8_YOUR_TOKEN --models flux-kontext-pro --images smile1
-
-# Full: test everything
-./run_tests.sh r8_YOUR_TOKEN
-
-# View results
-# Open compare.html in browser (it auto-loads results.json)
-```
-
-## Key Insight: Why Instruction-Based > Inpainting for This Use Case
-
-Inpainting models (ideogram, bria/genfill) require a binary mask isolating the teeth.
-This means you'd need:
-1. A teeth segmentation model (MediaPipe, SAM, or custom)
-2. Mask generation pipeline
-3. Two API calls instead of one
-4. More failure modes (bad mask → bad result)
-
-Instruction-based models (flux-kontext) skip all of this — you just say "change the teeth"
-and the model figures out where they are. For a lead magnet widget where speed and
-reliability matter more than pixel-perfect control, this is the right trade-off.
